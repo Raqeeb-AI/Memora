@@ -8,12 +8,12 @@ import { printMiniHeader } from "../banner.js";
 
 const CANDIDATE_LIMIT = 5;
 
-export async function goCommand(query) {
+export async function runCommand(query) {
   const entries = getAll();
 
   if (entries.length === 0) {
     console.log(theme.warn(`\n${symbols.cross} You haven't saved anything yet.`));
-    console.log(theme.muted(`Try: `) + theme.primary(`memora grab "what it does"`));
+    console.log(theme.muted(`Try: `) + theme.primary(`memora save "what it does"`));
     return;
   }
 

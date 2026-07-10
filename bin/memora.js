@@ -2,12 +2,12 @@
 import { Command } from "commander";
 import { runInteractive } from "../src/interactive.js";
 import { saveCommand } from "../src/commands/save.js";
-import { findCommand } from "../src/commands/find.js";
+import { runCommand } from "../src/commands/run.js";
 import { listCommand } from "../src/commands/list.js";
 import { deleteCommand } from "../src/commands/delete.js";
-import { grabCommand } from "../src/commands/grab.js";
-import { goCommand } from "../src/commands/go.js";
-import { printBanner } from "../src/banner.js";
+import { addCommand } from "../src/commands/add.js";
+import { findCommand } from "../src/commands/find.js";
+import { printBanner, VERSION } from "../src/banner.js";
 import { theme } from "../src/theme.js";
 
 const program = new Command();
@@ -15,41 +15,20 @@ const program = new Command();
 program
   .name("memora")
   .description("Never forget a command again.")
-  .version("1.0.2");
-
-program
-  .command("grab [description]")
-  .description('Save the command currently on your clipboard. Example: memora grab "restart docker"')
-  .action(async (description) => {
-    await grabCommand(description);
-  });
-
-program
-  .command("go [query]")
-  .description('Find a saved command and run it. Example: memora go "port"')
-  .action(async (query) => {
-    await goCommand(query);
-  });
+  .version(VERSION);
 
 program
   .command("save [description]")
-  .description(
-    '(Advanced) Save a command by typing it directly. Example: memora save "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif\n' +
-    "Prefer `memora grab` for commands with pipes/symbols — this can break on those in CMD."
-  )
-  .allowUnknownOption(true)
-  .action(async (description, _opts, cmd) => {
-    // Everything after `--` is treated as the literal command to store.
-    const commandParts = cmd.args.slice(description ? 1 : 0);
-    await saveCommand(description, commandParts);
+  .description('Save the command currently on your clipboard. Example: memora save "restart docker"')
+  .action(async (description) => {
+    await saveCommand(description);
   });
 
 program
-  .command("find [query]")
-  .description("(Advanced) Search saved commands without the run prompt \u2014 just lists matches")
-  .option("-c, --copy", "copy the top match to your clipboard")
-  .action(async (query, opts) => {
-    await findCommand(query, opts);
+  .command("run [query]")
+  .description('Find a saved command and run it. Example: memora run "port"')
+  .action(async (query) => {
+    await runCommand(query);
   });
 
 program
@@ -69,14 +48,34 @@ program
   });
 
 program
+  .command("add [description]")
+  .description(
+    '(Advanced) Save a command by typing it directly. Example: memora add "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif\n' +
+      "Prefer `memora save` for commands with pipes/symbols — this can break on those depending on your shell."
+  )
+  .allowUnknownOption(true)
+  .action(async (description, _opts, cmd) => {
+    // Everything after `--` is treated as the literal command to store.
+    const commandParts = cmd.args.slice(description ? 1 : 0);
+    await addCommand(description, commandParts);
+  });
+
+program
+  .command("find [query]")
+  .description("(Advanced) Search saved commands without the run prompt — just lists matches")
+  .option("-c, --copy", "copy the top match to your clipboard")
+  .action(async (query, opts) => {
+    await findCommand(query, opts);
+  });
+
+program
   .command("about")
   .description("Show the Memora banner")
   .action(() => {
     printBanner();
-    console.log(theme.muted("A tiny CLI that remembers commands so you don't have to.\n"));
   });
 
-// No subcommand at all -> friendly interactive menu (the "chat app" feel)
+// No subcommand at all -> friendly interactive menu
 if (process.argv.length <= 2) {
   runInteractive();
 } else {
