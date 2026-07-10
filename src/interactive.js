@@ -18,6 +18,7 @@ export async function runInteractive() {
         type: "list",
         name: "choice",
         message: theme.text("What do you want to do?"),
+        loop: false,
         choices: [
           { name: `${symbols.save}  Save a command (copy it first, then pick this)`, value: "grab" },
           { name: `${symbols.search}  Find & run a command`, value: "go" },

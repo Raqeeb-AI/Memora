@@ -15,7 +15,7 @@ const program = new Command();
 program
   .name("memora")
   .description("Never forget a command again.")
-  .version("1.0.0");
+  .version("1.0.2");
 
 program
   .command("grab [description]")
@@ -35,7 +35,7 @@ program
   .command("save [description]")
   .description(
     '(Advanced) Save a command by typing it directly. Example: memora save "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif\n' +
-      "Prefer `memora grab` for commands with pipes/symbols — this can break on those in CMD."
+    "Prefer `memora grab` for commands with pipes/symbols — this can break on those in CMD."
   )
   .allowUnknownOption(true)
   .action(async (description, _opts, cmd) => {

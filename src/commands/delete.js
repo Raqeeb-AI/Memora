@@ -11,13 +11,15 @@ export async function deleteCommand(id) {
   }
 
   if (!id) {
+    const maxLen = Math.max(...entries.map((e) => e.description.length));
     const { choice } = await inquirer.prompt([
       {
         type: "list",
         name: "choice",
         message: `${symbols.bullet} Pick a command to delete:`,
+        loop: false,
         choices: entries.map((e) => ({
-          name: `${e.description}  ${theme.dim(e.command)}`,
+          name: `${e.description.padEnd(maxLen + 4)} ${theme.dim(e.command)}`,
           value: e.id,
         })),
       },

@@ -41,13 +41,15 @@ export async function goCommand(query) {
     // This is the safety net against usage-frequency (or fuzzy noise)
     // ever silently choosing the wrong command for you.
     const candidates = ranked.slice(0, CANDIDATE_LIMIT);
+    const maxLen = Math.max(...candidates.map((c) => c.item.description.length));
     const { pick } = await inquirer.prompt([
       {
         type: "list",
         name: "pick",
         message: `${symbols.bullet} Found a few close matches — which one did you mean?`,
+        loop: false,
         choices: candidates.map((c) => ({
-          name: `${c.item.description}  ${theme.dim(c.item.command)}`,
+          name: `${c.item.description.padEnd(maxLen + 2)} ${theme.dim(c.item.command)}`,
           value: c.item.id,
         })),
       },
