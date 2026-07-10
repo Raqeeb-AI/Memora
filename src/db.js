@@ -49,6 +49,15 @@ export function touchEntry(id) {
   return entry;
 }
 
+export function updateEntry(id, updates) {
+  const entries = getAll();
+  const entry = entries.find((e) => e.id === id);
+  if (!entry) return null;
+  Object.assign(entry, updates, { updatedAt: new Date().toISOString() });
+  store.set("entries", entries);
+  return entry;
+}
+
 export function clearAll() {
   store.set("entries", []);
 }

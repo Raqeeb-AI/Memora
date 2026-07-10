@@ -4,20 +4,26 @@
 
 You've solved this exact problem before. Somewhere in your shell history is the `ffmpeg` flag combo, the `docker` one-liner, the `netstat` incantation that took you 15 minutes to get right the first time — and you're about to spend another 15 minutes finding it again.
 
-Memora fixes that. Save a command with a plain-English description. Find it later by describing what it does, not what you typed.
+Memora fixes that in two steps: copy a command, then find and run it later just by describing what it does.
 
 ```
-$ memora save "find what's running on a port" -- netstat -ano | findstr :8080
-✔ Saved!
+# just ran a gnarly command, copy it, then:
+$ memora grab "kill process on a port"
+✔ Saved from clipboard!
 
 # weeks later...
+$ memora go "port"
+Found it
+kill process on a port
+for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+(also on your clipboard, in case you want to edit before running)
 
-$ memora find "port"
-1. find what's running on a port
-   netstat -ano | findstr :8080
+Run this now? (y/N)
 ```
 
-No account. No cloud. No AI guessing. Just your own commands, searchable by intent.
+No account. No cloud. No AI guessing. Just your own commands, searchable by intent — and no retyping commands with pipes or special characters through your terminal's argument parser.
+
+> **Note:** Version 1.0.1 is intended for updating the user experience along with the updated fuzzy matching logic as in v2.
 
 ---
 
@@ -35,32 +41,36 @@ Shell history search only works if you remember a fragment of what you *typed*. 
 ## Install
 
 ```bash
-npm install -g memora-cli
+npm install -g memora-cmd
 ```
 
 ## Usage
 
-### Save a command
+### Save a command — `grab`
+
+Run your command, copy it (select + Ctrl+C), then:
 
 ```bash
-memora save "convert mp4 to gif" -- ffmpeg -i input.mp4 -vf "fps=10,scale=320:-1" output.gif
+memora grab "convert mp4 to gif"
 ```
 
-Everything after `--` is stored exactly as-is — no parsing, no surprises.
+Memora reads the command straight from your clipboard — no retyping, and no fighting your shell's escaping rules for `|`, `^`, `%`, or quotes.
 
-### Find a command
+If you save something worded like an existing entry, Memora will ask whether you meant to update it or save a separate one — so your list doesn't fill up with near-duplicates.
+
+### Find & run a command — `go`
 
 ```bash
-memora find "gif"
+memora go "gif"
 ```
 
-Fuzzy search matches on description, tags, and the command itself — so you don't need the exact wording.
+- Shows you the full matching command
+- Copies it to your clipboard automatically
+- Asks **"Run this now?"** before doing anything
 
-Copy the top match straight to your clipboard:
+If more than one saved command could match, you'll get a short list to pick from instead of Memora silently guessing — so a command you use constantly never accidentally shadows one you rarely need.
 
-```bash
-memora find "gif" --copy
-```
+Ranking is relevance-first: text match quality always wins. Usage frequency only breaks ties between two matches that are already equally relevant — it never overrides a clearly better match.
 
 ### List everything you've saved
 
@@ -83,6 +93,18 @@ No arguments launches a friendly interactive menu — pick what you want to do w
 ```bash
 memora
 ```
+
+### Advanced: type a command directly
+
+If you can't use the clipboard (e.g. scripting/CI), the original typed-save still works:
+
+```bash
+memora save "convert mp4 to gif" -- ffmpeg -i input.mp4 -vf "fps=10,scale=320:-1" output.gif
+```
+
+Everything after `--` is stored exactly as-is. Note: symbols like `|` and `^` may need escaping depending on your shell — `memora grab` avoids this entirely and is the recommended default.
+
+There's also a plain search without the run-prompt: `memora find "gif"`.
 
 ## Where's my data stored?
 

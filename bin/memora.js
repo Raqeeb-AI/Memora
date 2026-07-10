@@ -5,6 +5,8 @@ import { saveCommand } from "../src/commands/save.js";
 import { findCommand } from "../src/commands/find.js";
 import { listCommand } from "../src/commands/list.js";
 import { deleteCommand } from "../src/commands/delete.js";
+import { grabCommand } from "../src/commands/grab.js";
+import { goCommand } from "../src/commands/go.js";
 import { printBanner } from "../src/banner.js";
 import { theme } from "../src/theme.js";
 
@@ -16,8 +18,25 @@ program
   .version("1.0.0");
 
 program
+  .command("grab [description]")
+  .description('Save the command currently on your clipboard. Example: memora grab "restart docker"')
+  .action(async (description) => {
+    await grabCommand(description);
+  });
+
+program
+  .command("go [query]")
+  .description('Find a saved command and run it. Example: memora go "port"')
+  .action(async (query) => {
+    await goCommand(query);
+  });
+
+program
   .command("save [description]")
-  .description('Save a command. Example: memora save "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif')
+  .description(
+    '(Advanced) Save a command by typing it directly. Example: memora save "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif\n' +
+      "Prefer `memora grab` for commands with pipes/symbols — this can break on those in CMD."
+  )
   .allowUnknownOption(true)
   .action(async (description, _opts, cmd) => {
     // Everything after `--` is treated as the literal command to store.
@@ -27,7 +46,7 @@ program
 
 program
   .command("find [query]")
-  .description("Find a saved command by describing what it does")
+  .description("(Advanced) Search saved commands without the run prompt \u2014 just lists matches")
   .option("-c, --copy", "copy the top match to your clipboard")
   .action(async (query, opts) => {
     await findCommand(query, opts);
