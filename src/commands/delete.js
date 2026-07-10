@@ -11,17 +11,26 @@ export async function deleteCommand(id) {
   }
 
   if (!id) {
-    const maxLen = Math.max(...entries.map((e) => e.description.length));
+    const maxDesc = Math.min(30, Math.max(...entries.map((e) => e.description.length)));
+    const maxCmd = Math.min(45, Math.max(...entries.map((e) => e.command.length)));
+    const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + "..." : str.padEnd(len);
+
     const { choice } = await inquirer.prompt([
       {
         type: "list",
         name: "choice",
         message: `${symbols.bullet} Pick a command to delete:`,
         loop: false,
-        choices: entries.map((e) => ({
-          name: `${e.description.padEnd(maxLen + 4)} ${theme.dim(e.command)}`,
-          value: e.id,
-        })),
+        choices: [
+          new inquirer.Separator(`  ┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`),
+          new inquirer.Separator(`  │ ${theme.muted("Description".padEnd(maxDesc))} │ ${theme.muted("Command".padEnd(maxCmd))} │`),
+          new inquirer.Separator(`  ├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`),
+          ...entries.map((e) => ({
+            name: `│ ${truncate(e.description, maxDesc)} │ ${theme.dim(truncate(e.command, maxCmd))} │`,
+            value: e.id,
+          })),
+          new inquirer.Separator(`  └─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`),
+        ],
       },
     ]);
     id = choice;
