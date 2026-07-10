@@ -2,6 +2,8 @@
 
 **Never forget a command again.**
 
+> **Note:** Version 1.0.3 standardizes terminology mapping ('save' to replace 'grab', 'run' to replace 'go', etc.), and implements dynamic, ultra-clean UI console formatting.
+
 You've solved this exact problem before. Somewhere in your shell history is the `ffmpeg` flag combo, the `docker` one-liner, the `netstat` incantation that took you 15 minutes to get right the first time — and you're about to spend another 15 minutes finding it again.
 
 Memora fixes that in two steps: copy a command, then find and run it later just by describing what it does.
