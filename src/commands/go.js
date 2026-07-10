@@ -43,8 +43,14 @@ export async function goCommand(query) {
     const candidates = ranked.slice(0, CANDIDATE_LIMIT);
     const termWidth = process.stdout.columns || 80;
     const available = Math.max(40, termWidth - 12);
-    const maxDesc = Math.floor(available * 0.4);
-    const maxCmd = Math.floor(available * 0.6);
+    let maxDesc = Math.max(11, ...candidates.map((c) => c.item.description.length));
+    let maxCmd = Math.max(7, ...candidates.map((c) => c.item.command.length));
+
+    if (maxDesc + maxCmd > available) {
+      maxDesc = Math.min(maxDesc, Math.floor(available * 0.4));
+      maxCmd = Math.min(maxCmd, Math.floor(available * 0.6));
+    }
+
     const truncate = (str, len) => str.length > len ? str.slice(0, Math.max(0, len - 3)) + "..." : str.padEnd(len);
 
     const cPrimary = theme.primary;

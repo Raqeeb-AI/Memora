@@ -13,8 +13,14 @@ export async function deleteCommand(id) {
   if (!id) {
     const termWidth = process.stdout.columns || 80;
     const available = Math.max(40, termWidth - 12);
-    const maxDesc = Math.floor(available * 0.4);
-    const maxCmd = Math.floor(available * 0.6);
+    let maxDesc = Math.max(11, ...entries.map((e) => e.description.length));
+    let maxCmd = Math.max(7, ...entries.map((e) => e.command.length));
+
+    if (maxDesc + maxCmd > available) {
+      maxDesc = Math.min(maxDesc, Math.floor(available * 0.4));
+      maxCmd = Math.min(maxCmd, Math.floor(available * 0.6));
+    }
+
     const truncate = (str, len) => str.length > len ? str.slice(0, Math.max(0, len - 3)) + "..." : str.padEnd(len);
 
     const cPrimary = theme.primary; // Neon/violet for box lines
