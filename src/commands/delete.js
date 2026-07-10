@@ -11,9 +11,13 @@ export async function deleteCommand(id) {
   }
 
   if (!id) {
-    const maxDesc = Math.min(30, Math.max(...entries.map((e) => e.description.length)));
-    const maxCmd = Math.min(45, Math.max(...entries.map((e) => e.command.length)));
-    const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + "..." : str.padEnd(len);
+    const termWidth = process.stdout.columns || 80;
+    const available = Math.max(40, termWidth - 12);
+    const maxDesc = Math.floor(available * 0.4);
+    const maxCmd = Math.floor(available * 0.6);
+    const truncate = (str, len) => str.length > len ? str.slice(0, Math.max(0, len - 3)) + "..." : str.padEnd(len);
+
+    const cPrimary = theme.primary; // Neon/violet for box lines
 
     const { choice } = await inquirer.prompt([
       {
@@ -22,14 +26,14 @@ export async function deleteCommand(id) {
         message: `${symbols.bullet} Pick a command to delete:`,
         loop: false,
         choices: [
-          new inquirer.Separator(`  ┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`),
-          new inquirer.Separator(`  │ ${theme.muted("Description".padEnd(maxDesc))} │ ${theme.muted("Command".padEnd(maxCmd))} │`),
-          new inquirer.Separator(`  ├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`),
+          new inquirer.Separator(cPrimary(`┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`)),
+          new inquirer.Separator(cPrimary(`│ `) + theme.muted("Description".padEnd(maxDesc)) + cPrimary(` │ `) + theme.muted("Command".padEnd(maxCmd)) + cPrimary(` │`)),
+          new inquirer.Separator(cPrimary(`├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`)),
           ...entries.map((e) => ({
-            name: `│ ${truncate(e.description, maxDesc)} │ ${theme.dim(truncate(e.command, maxCmd))} │`,
+            name: cPrimary(`│ `) + theme.text(truncate(e.description, maxDesc)) + cPrimary(` │ `) + theme.dim(truncate(e.command, maxCmd)) + cPrimary(` │`),
             value: e.id,
           })),
-          new inquirer.Separator(`  └─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`),
+          new inquirer.Separator(cPrimary(`└─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`)),
         ],
       },
     ]);

@@ -41,9 +41,13 @@ export async function goCommand(query) {
     // This is the safety net against usage-frequency (or fuzzy noise)
     // ever silently choosing the wrong command for you.
     const candidates = ranked.slice(0, CANDIDATE_LIMIT);
-    const maxDesc = Math.min(30, Math.max(...candidates.map((c) => c.item.description.length)));
-    const maxCmd = Math.min(45, Math.max(...candidates.map((c) => c.item.command.length)));
-    const truncate = (str, len) => str.length > len ? str.slice(0, len - 3) + "..." : str.padEnd(len);
+    const termWidth = process.stdout.columns || 80;
+    const available = Math.max(40, termWidth - 12);
+    const maxDesc = Math.floor(available * 0.4);
+    const maxCmd = Math.floor(available * 0.6);
+    const truncate = (str, len) => str.length > len ? str.slice(0, Math.max(0, len - 3)) + "..." : str.padEnd(len);
+
+    const cPrimary = theme.primary;
 
     const { pick } = await inquirer.prompt([
       {
@@ -52,14 +56,14 @@ export async function goCommand(query) {
         message: `${symbols.bullet} Found a few close matches — which one did you mean?`,
         loop: false,
         choices: [
-          new inquirer.Separator(`  ┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`),
-          new inquirer.Separator(`  │ ${theme.muted("Description".padEnd(maxDesc))} │ ${theme.muted("Command".padEnd(maxCmd))} │`),
-          new inquirer.Separator(`  ├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`),
+          new inquirer.Separator(cPrimary(`┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`)),
+          new inquirer.Separator(cPrimary(`│ `) + theme.muted("Description".padEnd(maxDesc)) + cPrimary(` │ `) + theme.muted("Command".padEnd(maxCmd)) + cPrimary(` │`)),
+          new inquirer.Separator(cPrimary(`├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`)),
           ...candidates.map((c) => ({
-            name: `│ ${truncate(c.item.description, maxDesc)} │ ${theme.dim(truncate(c.item.command, maxCmd))} │`,
+            name: cPrimary(`│ `) + theme.text(truncate(c.item.description, maxDesc)) + cPrimary(` │ `) + theme.dim(truncate(c.item.command, maxCmd)) + cPrimary(` │`),
             value: c.item.id,
           })),
-          new inquirer.Separator(`  └─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`),
+          new inquirer.Separator(cPrimary(`└─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`)),
         ],
       },
     ]);
