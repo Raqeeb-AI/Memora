@@ -10,37 +10,36 @@ export async function deleteCommand(id) {
     return;
   }
 
+  const termWidth = process.stdout.columns || 80;
+  const maxDesc = Math.max(...entries.map((e) => e.description.length));
+  const descLimit = Math.min(maxDesc, Math.floor(termWidth * 0.4));
+  const cmdLimit = termWidth - descLimit - 12;
+
   if (!id) {
-    const termWidth = process.stdout.columns || 80;
-    const available = Math.max(40, termWidth - 12);
-    let maxDesc = Math.max(11, ...entries.map((e) => e.description.length));
-    let maxCmd = Math.max(7, ...entries.map((e) => e.command.length));
-
-    if (maxDesc + maxCmd > available) {
-      maxDesc = Math.min(maxDesc, Math.floor(available * 0.4));
-      maxCmd = Math.min(maxCmd, Math.floor(available * 0.6));
-    }
-
-    const truncate = (str, len) => str.length > len ? str.slice(0, Math.max(0, len - 3)) + "..." : str.padEnd(len);
-
-    const cPrimary = theme.primary; // Neon/violet for box lines
-
     const { choice } = await inquirer.prompt([
       {
         type: "list",
         name: "choice",
         message: `${symbols.bullet} Pick a command to delete:`,
         loop: false,
-        choices: [
-          new inquirer.Separator(cPrimary(`┌─${"─".repeat(maxDesc)}─┬─${"─".repeat(maxCmd)}─┐`)),
-          new inquirer.Separator(cPrimary(`│ `) + theme.muted("Description".padEnd(maxDesc)) + cPrimary(` │ `) + theme.muted("Command".padEnd(maxCmd)) + cPrimary(` │`)),
-          new inquirer.Separator(cPrimary(`├─${"─".repeat(maxDesc)}─┼─${"─".repeat(maxCmd)}─┤`)),
-          ...entries.map((e) => ({
-            name: cPrimary(`│ `) + theme.text(truncate(e.description, maxDesc)) + cPrimary(` │ `) + theme.dim(truncate(e.command, maxCmd)) + cPrimary(` │`),
+        pageSize: 10,
+        choices: entries.map((e) => {
+          let d = e.description;
+          if (d.length > descLimit) {
+            d = d.slice(0, descLimit - 3) + "...";
+          }
+          d = d.padEnd(descLimit, " ");
+
+          let c = e.command;
+          if (c.length > cmdLimit && cmdLimit > 10) {
+            c = c.slice(0, cmdLimit - 3) + "...";
+          }
+
+          return {
+            name: `${d}  ${theme.dim("│")}  ${theme.dim(c)}`,
             value: e.id,
-          })),
-          new inquirer.Separator(cPrimary(`└─${"─".repeat(maxDesc)}─┴─${"─".repeat(maxCmd)}─┘`)),
-        ],
+          };
+        }),
       },
     ]);
     id = choice;

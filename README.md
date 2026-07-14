@@ -2,23 +2,29 @@
 
 **Never forget a command again.**
 
-> **Note:** Version 1.0.3 standardizes terminology mapping ('save' to replace 'grab', 'run' to replace 'go', etc.), and implements dynamic, ultra-clean UI console formatting.
-
 You've solved this exact problem before. Somewhere in your shell history is the `ffmpeg` flag combo, the `docker` one-liner, the `netstat` incantation that took you 15 minutes to get right the first time — and you're about to spend another 15 minutes finding it again.
 
-Memora fixes that in two steps: copy a command, then find and run it later just by describing what it does.
+### The Problem
+Developers frequently type long, complicated terminal commands that they might not use every day, but don't want to re-learn or search Google for next time. Standard shell history tools (like hitting `Ctrl+R`) require you to remember the exact syntax or text you typed, they are tied to a single machine, they randomly forget older commands, and they don't work smoothly natively on Windows CMD. You need a system that retrieves commands based on their *intent* and meaning, not just exact text matches.
+
+### The Solution: Memora
+Memora fixes this constraint: Save a command right after you run it with a plain-English description, then find and run it later just by describing what it does. Instead of trying to memorize flags, Memora remembers contexts.
 
 ```
-# just ran a gnarly command, copy it, then:
+# just ran a gnarly command:
 $ memora save "kill process on a port"
+
+Last command in this terminal:
+  for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+
+Save this one? (Y/n)
 ✓ Saved
 
 # weeks later...
-$ memora run "port"
+$ memora run "network info"
 Found
-kill process on a port
-for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
-Also copied to your clipboard.
+network configuration
+ipconfig /all
 
 Run this now? (y/N)
 ```
@@ -48,15 +54,15 @@ npm install -g memora-cmd
 
 ### Save a command
 
-Run your command, copy it (select + Ctrl+C), then:
+Right after you run something you'll want again:
 
 ```bash
 memora save "convert mp4 to gif"
 ```
 
-Memora reads the command straight from your clipboard — no retyping, and no fighting your shell's escaping rules for `|`, `^`, `%`, or quotes.
+Memora shows you the last command it detected in your terminal and asks you to confirm before saving anything — so it never silently saves the wrong thing. If detection doesn't work on your setup, it falls back to manual entry, always with the same confirmation step.
 
-If you save something worded like an existing entry, Memora will ask whether you meant to update it or save a separate one — so your list doesn't fill up with near-duplicates.
+If you save something worded like an existing entry, Memora will also ask whether you meant to update it or save a separate one — so your list doesn't fill up with near-duplicates.
 
 ### Find & run a command
 
@@ -65,12 +71,13 @@ memora run "gif"
 ```
 
 - Shows you the full matching command
-- Copies it to your clipboard automatically
 - Asks **"Run this now?"** before doing anything
 
 If more than one saved command could match, you'll get a short list to pick from instead of Memora silently guessing — so a command you use constantly never accidentally shadows one you rarely need.
 
-Ranking is relevance-first: text match quality always wins. Usage frequency only breaks ties between two matches that are already equally relevant — it never overrides a clearly better match.
+Memora is truly intelligent: it uses a lightweight local AI model to perform **semantic matching** instead of simple fuzzy text. This means genuinely different wording with zero shared vocabulary (e.g. "network info" vs "check my ip") will still match perfectly. Since the model is bundled and runs on your machine, it retains the fully offline, private-by-default design this tool is built around.
+
+Ranking is relevance-first regardless: text match quality always wins. Usage frequency only breaks ties between two matches that are already equally relevant — it never overrides a clearly better match.
 
 ### List everything you've saved
 
@@ -96,7 +103,7 @@ memora
 
 ### Advanced: type a command directly
 
-If you can't use the clipboard (e.g. scripting/CI), typed-save is still available:
+If you can't use terminal detection (e.g. scripting/CI), typed-save is still available:
 
 ```bash
 memora add "convert mp4 to gif" -- ffmpeg -i input.mp4 -vf "fps=10,scale=320:-1" output.gif
@@ -116,7 +123,7 @@ Locally, in a JSON file in your OS's standard config directory — nothing leave
 
 ## Built with
 
-Node.js · [Commander](https://github.com/tj/commander.js) · [Inquirer](https://github.com/SBoudrias/Inquirer.js) · [Fuse.js](https://fusejs.io/) (fuzzy search) · [Chalk](https://github.com/chalk/chalk) & [Boxen](https://github.com/sindresorhus/boxen) (terminal styling) · [Conf](https://github.com/sindresorhus/conf) (cross-platform storage)
+Node.js · [Commander](https://github.com/tj/commander.js) · [Inquirer](https://github.com/SBoudrias/Inquirer.js) · [Transformers.js](https://github.com/xenova/transformers.js) (semantic search) · [Chalk](https://github.com/chalk/chalk) & [Boxen](https://github.com/sindresorhus/boxen) (terminal styling) · [Conf](https://github.com/sindresorhus/conf) (cross-platform storage)
 
 ## Contributing
 

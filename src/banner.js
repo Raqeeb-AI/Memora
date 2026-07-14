@@ -1,38 +1,92 @@
-import chalk from "chalk";
-import figlet from "figlet";
-import gradientString from "gradient-string";
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-const memoraGradient = gradientString(["#7C5CFC", "#00D9C0"]);
+export const VERSION = "1.0.7";
+
+import chalk from "chalk";
 
 export function printBanner() {
-  const title = figlet.textSync("Memora", {
-    font: "Standard",
-    horizontalLayout: "fitted",
-  });
+  const letters = {
+    M: [
+      "  __  __ ",
+      " |  \\/  |",
+      " | |\\/| |",
+      " | |  | |",
+      " |_|  |_|"
+    ],
+    e: [
+      "       ",
+      "  ___  ",
+      " / _ \\ ",
+      "|  __/ ",
+      " \\___| "
+    ],
+    m: [
+      "            ",
+      " _ __ ___   ",
+      "| '_ ` _ \\  ",
+      "| | | | | | ",
+      "|_| |_| |_| "
+    ],
+    o: [
+      "       ",
+      "  ___  ",
+      " / _ \\ ",
+      "| (_) |",
+      " \\___/ "
+    ],
+    r: [
+      "      ",
+      " _ __ ",
+      "| '__|",
+      "| |   ",
+      "|_|   "
+    ],
+    a: [
+      "        ",
+      "  __ _  ",
+      " / _` | ",
+      "| (_| | ",
+      " \\__,_| "
+    ]
+  };
 
-  console.log("\n" + memoraGradient.multiline(title));
-
-  const subtitle = boxen(
-    `${theme.text("Never forget a command again.")}\n` +
-    `${theme.muted(
-      "Save the commands you always forget. Find them by what they do, not what you typed."
-    )}`,
-    {
-      padding: { top: 0, bottom: 0, left: 1, right: 1 },
-      margin: { top: 0, bottom: 1, left: 0, right: 0 },
-      borderStyle: "round",
-      borderColor: "#7C5CFC",
-    }
+  const logo = [0, 1, 2, 3, 4].map((i) =>
+    [letters.M[i], letters.e[i], letters.m[i], letters.o[i], letters.r[i], letters.a[i]].join(" ")
   );
 
-  console.log(subtitle);
+  const gradientHex = ["#9C27B0", "#AB47BC", "#BA68C8", "#CE93D8", "#E1BEE7"];
+
+  console.log();
+  logo.forEach((line, index) => {
+    console.log("  " + chalk.hex(gradientHex[index]).bold(line));
+  });
+  console.log();
+
+  const title = `${theme.primaryDim("CLI")}  ${theme.muted(`v${VERSION}`)}`;
+  const tagline = theme.text("Save a command. Find it later by what it does, not what you typed.");
+  const divider = theme.dim("·".repeat(72));
+
+  const usage =
+    `${theme.primary("memora save")} ${theme.dim('"what it does"')}\n` +
+    `${theme.muted("  saves the last command you typed")}\n\n` +
+    `${theme.primary("memora run ")} ${theme.dim('"what it does"')}\n` +
+    `${theme.muted("  finds it and asks if you want to run it")}`;
+
+  console.log(
+    boxen(`${title}\n${tagline}\n${divider}\n\n${usage}`, {
+      padding: { top: 1, bottom: 1, left: 2, right: 2 },
+      margin: { top: 0, bottom: 1, left: 1, right: 0 },
+      borderStyle: "round",
+      borderColor: "#D9B24C",
+      dimBorder: true,
+    })
+  );
 }
 
 export function printMiniHeader(text) {
-  console.log(theme.primary.bold(`\n${text}`));
-  console.log(theme.muted("─".repeat(Math.min(text.length + 4, 60))));
+  console.log(theme.primary(`\n${text}`));
+  console.log(theme.dim("─".repeat(Math.min(text.length + 4, 60))));
 }
 
 export function printSuccessBox(lines) {
@@ -41,9 +95,8 @@ export function printSuccessBox(lines) {
       padding: { top: 0, bottom: 0, left: 1, right: 1 },
       margin: { top: 0, bottom: 0, left: 0, right: 0 },
       borderStyle: "round",
-      borderColor: "#00D9C0",
+      borderColor: "#3DDC97",
+      dimBorder: true,
     })
   );
 }
-
-export const VERSION = "1.0.3";

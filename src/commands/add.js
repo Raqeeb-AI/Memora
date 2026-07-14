@@ -3,31 +3,33 @@ import { addEntry } from "../db.js";
 import { theme, symbols } from "../theme.js";
 import { printSuccessBox } from "../banner.js";
 
+// Advanced path: type the command directly instead of using the clipboard.
+// Prefer `memora save` for anything with pipes or special characters —
+// this can break on those depending on your shell.
 export async function addCommand(description, commandParts) {
   let desc = description;
   let cmd = commandParts && commandParts.length ? commandParts.join(" ") : null;
 
-  // Interactive fallback if called with no args (from the menu, or bare `memora save`)
   if (!desc || !cmd) {
     const answers = await inquirer.prompt([
       {
         type: "input",
         name: "description",
-        message: `${symbols.brain}  What does this command do? (plain English)`,
+        message: "What does this command do?",
         when: !desc,
         validate: (v) => (v.trim() ? true : "Give it a short description."),
       },
       {
         type: "input",
         name: "command",
-        message: `${symbols.save}  Paste the exact command:`,
+        message: "Paste the exact command:",
         when: !cmd,
         validate: (v) => (v.trim() ? true : "The command can't be empty."),
       },
       {
         type: "input",
         name: "tags",
-        message: `${theme.muted("Optional tags (comma separated, or leave blank):")}`,
+        message: theme.muted("Optional tags (comma separated, or leave blank):"),
       },
     ]);
     desc = desc || answers.description;
@@ -42,12 +44,12 @@ export async function addCommand(description, commandParts) {
   const entry = addEntry({ description: desc, command: cmd, tags });
 
   printSuccessBox([
-    `${symbols.check} ${theme.bold("Saved!")}`,
+    `${symbols.check} ${theme.bold("Saved")}`,
     "",
     `${theme.muted("Description:")} ${theme.text(entry.description)}`,
     `${theme.muted("Command:")}     ${theme.accent(entry.command)}`,
     tags.length ? `${theme.muted("Tags:")}        ${tags.map((t) => theme.primary("#" + t)).join(" ")}` : null,
   ].filter(Boolean));
 
-  console.log(theme.muted(`Try: `) + theme.primary(`memora save "what it does"`));
+  console.log(theme.muted(`\nRecall it with: `) + theme.primary(`memora run "${desc.split(" ").slice(0, 2).join(" ")}"`));
 }

@@ -2,8 +2,49 @@ import inquirer from "inquirer";
 import clipboardy from "clipboardy";
 import { addEntry, getAll, updateEntry } from "../db.js";
 import { findSimilar } from "../search.js";
+import { getLastTypedCommand } from "../lastCommand.js";
 import { theme, symbols } from "../theme.js";
 import { printSuccessBox } from "../banner.js";
+
+// Figures out which command to save, in order of trust:
+// 1. The command you actually just typed in this terminal
+// 2. Your clipboard, as a fallback
+// 3. Manual entry, if neither of the above worked
+// Whichever source it comes from, the user always confirms it before
+// anything is saved — this is the fix for one source ever silently
+// grabbing the wrong text.
+async function resolveCommandToSave() {
+  const typed = getLastTypedCommand();
+  if (typed) {
+    return typed;
+  }
+
+  let clip = null;
+  try {
+    clip = (await clipboardy.read()).trim();
+  } catch {
+    clip = null;
+  }
+
+  if (clip) {
+    console.log(theme.muted("\nFound this on your clipboard instead:"));
+    console.log(`  ${theme.accent(clip)}\n`);
+    const { confirmed } = await inquirer.prompt([
+      { type: "confirm", name: "confirmed", message: "Save this one?", default: true },
+    ]);
+    if (confirmed) return clip;
+  }
+
+  const { manual } = await inquirer.prompt([
+    {
+      type: "input",
+      name: "manual",
+      message: "Paste the exact command:",
+      validate: (v) => (v.trim() ? true : "The command can't be empty."),
+    },
+  ]);
+  return manual.trim();
+}
 
 export async function saveCommand(description) {
   let desc = description;
@@ -13,41 +54,26 @@ export async function saveCommand(description) {
       {
         type: "input",
         name: "d",
-        message: `${symbols.brain}  What does this command do?`,
+        message: "What does this command do?",
         validate: (v) => (v.trim() ? true : "Give it a short description."),
       },
     ]);
     desc = d;
   }
 
-  let cmd;
-  try {
-    cmd = (await clipboardy.read()).trim();
-  } catch {
-    console.log(theme.danger(`\n${symbols.cross} Couldn't read your clipboard.`));
-    console.log(
-      theme.muted("Copy your command first (select it, then Ctrl+C), then run this again.")
-    );
-    return;
-  }
-
+  const cmd = await resolveCommandToSave();
   if (!cmd) {
-    console.log(theme.warn(`\n${symbols.cross} Your clipboard is empty.`));
-    console.log(theme.muted("Copy the command you want to save, then run this again."));
+    console.log(theme.muted("\nCancelled — nothing saved."));
     return;
   }
 
   const existing = getAll();
-  const similar = findSimilar(existing, desc);
+  const similar = await findSimilar(existing, desc);
 
   if (similar) {
-    console.log(
-      theme.warn(
-        `\n${symbols.bullet} You already have something similar saved:\n`
-      )
-    );
-    console.log(`   ${theme.text(similar.description)}`);
-    console.log(`   ${theme.dim(similar.command)}\n`);
+    console.log(theme.warn(`\n${symbols.bullet} You already have something similar saved:\n`));
+    console.log(`  ${theme.text(similar.description)}`);
+    console.log(`  ${theme.dim(similar.command)}\n`);
 
     const { action } = await inquirer.prompt([
       {
@@ -81,14 +107,14 @@ export async function saveCommand(description) {
   const entry = addEntry({ description: desc, command: cmd, tags: [] });
 
   printSuccessBox([
-    `${symbols.check} ${theme.bold("Saved from clipboard!")}`,
+    `${symbols.check} ${theme.bold("Saved")}`,
     "",
     `${theme.muted("Description:")} ${theme.text(entry.description)}`,
     `${theme.muted("Command:")}     ${theme.accent(entry.command)}`,
   ]);
 
   console.log(
-    theme.muted(`\nRecall it anytime with: `) +
+    theme.muted(`\nRecall it with: `) +
     theme.primary(`memora run "${desc.split(" ").slice(0, 2).join(" ")}"`)
   );
 }

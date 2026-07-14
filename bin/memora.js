@@ -19,7 +19,7 @@ program
 
 program
   .command("save [description]")
-  .description('Save the command currently on your clipboard. Example: memora save "restart docker"')
+  .description('Save the command you just ran. Example: memora save "restart docker"')
   .action(async (description) => {
     await saveCommand(description);
   });
