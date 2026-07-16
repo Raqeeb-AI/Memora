@@ -7,6 +7,8 @@ import { listCommand } from "../src/commands/list.js";
 import { deleteCommand } from "../src/commands/delete.js";
 import { addCommand } from "../src/commands/add.js";
 import { findCommand } from "../src/commands/find.js";
+import { updateCommand } from "../src/commands/update.js";
+import { guideCommand } from "../src/commands/guide.js";
 import { printBanner, VERSION } from "../src/banner.js";
 import { theme } from "../src/theme.js";
 
@@ -51,7 +53,7 @@ program
   .command("add [description]")
   .description(
     '(Advanced) Save a command by typing it directly. Example: memora add "convert mp4 to gif" -- ffmpeg -i in.mp4 out.gif\n' +
-      "Prefer `memora save` for commands with pipes/symbols — this can break on those depending on your shell."
+    "Prefer `memora save` for commands with pipes/symbols — this can break on those depending on your shell."
   )
   .allowUnknownOption(true)
   .action(async (description, _opts, cmd) => {
@@ -66,6 +68,20 @@ program
   .option("-c, --copy", "copy the top match to your clipboard")
   .action(async (query, opts) => {
     await findCommand(query, opts);
+  });
+
+program
+  .command("update")
+  .description("Check for and install the latest version")
+  .action(async () => {
+    await updateCommand();
+  });
+
+program
+  .command("guide")
+  .description("Show a compact reference table of every memora command")
+  .action(() => {
+    guideCommand();
   });
 
 program

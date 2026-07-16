@@ -5,6 +5,8 @@ import { runCommand } from "./commands/run.js";
 import { listCommand } from "./commands/list.js";
 import { deleteCommand } from "./commands/delete.js";
 import { addCommand } from "./commands/add.js";
+import { updateCommand } from "./commands/update.js";
+import { guideCommand } from "./commands/guide.js";
 
 export async function runInteractive() {
   printBanner();
@@ -22,6 +24,8 @@ export async function runInteractive() {
           { name: "Find & run a command", value: "run" },
           { name: "List everything saved", value: "list" },
           { name: "Delete a command", value: "delete" },
+          { name: "Check for updates", value: "update" },
+          { name: "How to use", value: "guide" },
           new inquirer.Separator(),
           { name: theme.muted("Exit"), value: "exit" },
         ],
@@ -41,6 +45,12 @@ export async function runInteractive() {
         break;
       case "delete":
         await deleteCommand();
+        break;
+      case "update":
+        await updateCommand();
+        break;
+      case "guide":
+        guideCommand();
         break;
       case "exit":
         console.log(theme.muted("\nSee you next time.\n"));

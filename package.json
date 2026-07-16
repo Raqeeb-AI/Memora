@@ -1,6 +1,6 @@
 {
   "name": "memora-cmd",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Never forget a command again. Save the terminal commands you always forget, find them instantly by describing what they do.",
   "main": "src/index.js",
   "type": "module",
@@ -19,7 +19,7 @@
     "developer-tools",
     "snippets"
   ],
-  "author": "",
+  "author": "Mohammed Abdul Raqeeb (https://linkedin.com/in/md-abdul-raqeeb-b85a1922a)",
   "license": "MIT",
   "engines": {
     "node": ">=16"

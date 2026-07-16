@@ -1,7 +1,7 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.7";
+export const VERSION = "1.0.8";
 
 import chalk from "chalk";
 
@@ -76,12 +76,13 @@ export function printBanner() {
   console.log(
     boxen(`${title}\n${tagline}\n${divider}\n\n${usage}`, {
       padding: { top: 1, bottom: 1, left: 2, right: 2 },
-      margin: { top: 0, bottom: 1, left: 1, right: 0 },
+      margin: { top: 0, bottom: 0, left: 1, right: 0 },
       borderStyle: "round",
       borderColor: "#D9B24C",
       dimBorder: true,
     })
   );
+  console.log(theme.dim("   Built by Mohammed Abdul Raqeeb · linkedin.com/in/md-abdul-raqeeb-b85a1922a\n"));
 }
 
 export function printMiniHeader(text) {
