@@ -57,13 +57,13 @@ memora list
 
 | Command | Purpose | Example |
 |---|---|---|
+| `memora` | Open an interactive arrow-key menu 🎮 | `memora` |
 | `memora save "desc"` | Save the command you just ran 💾 | `memora save "restart docker"` |
 | `memora run "desc"` | Find a command and run it 🏃 | `memora run "restart docker"` |
 | `memora find "desc"` | Find a command without running it 🔍 | `memora find "restart docker"` |
 | `memora add "desc" -- cmd` | Add a command manually ✍️ | `memora add "restart docker" -- docker compose restart` |
 | `memora list` | Show everything you've saved 📋 | `memora list` |
 | `memora delete [id]` | Delete a saved command 🗑️ | `memora delete H8Q7xxe3` |
-| `memora` | Open an interactive arrow-key menu 🎮 | `memora` |
 
 ## Why not just Ctrl+R? 🤔
 
