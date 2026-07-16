@@ -27,8 +27,6 @@ export async function runInteractive() {
           { name: "List everything saved", value: "list" },
           { name: "Delete a command", value: "delete" },
           new inquirer.Separator(),
-          { name: theme.muted("Add a command manually"), value: "add" },
-          { name: theme.muted("Find without running"), value: "find" },
           { name: theme.muted("Check for updates"), value: "update" },
           { name: theme.muted("How to use"), value: "guide" },
           new inquirer.Separator(),
