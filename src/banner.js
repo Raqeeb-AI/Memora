@@ -1,61 +1,18 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.8";
+export const VERSION = "1.0.9";
 
 import chalk from "chalk";
 
 export function printBanner() {
-  const letters = {
-    M: [
-      "  __  __ ",
-      " |  \\/  |",
-      " | |\\/| |",
-      " | |  | |",
-      " |_|  |_|"
-    ],
-    e: [
-      "       ",
-      "  ___  ",
-      " / _ \\ ",
-      "|  __/ ",
-      " \\___| "
-    ],
-    m: [
-      "            ",
-      " _ __ ___   ",
-      "| '_ ` _ \\  ",
-      "| | | | | | ",
-      "|_| |_| |_| "
-    ],
-    o: [
-      "       ",
-      "  ___  ",
-      " / _ \\ ",
-      "| (_) |",
-      " \\___/ "
-    ],
-    r: [
-      "      ",
-      " _ __ ",
-      "| '__|",
-      "| |   ",
-      "|_|   "
-    ],
-    a: [
-      "        ",
-      "  __ _  ",
-      " / _` | ",
-      "| (_| | ",
-      " \\__,_| "
-    ]
-  };
+  const logo = [
+    "  _ __  ___ _ __  ___ _ _ __ _ ",
+    " | '  \\/ -_) '  \\/ _ \\ '_/ _` |",
+    " |_|_|_\\___|_|_|_\\___/_| \\__,_|"
+  ];
 
-  const logo = [0, 1, 2, 3, 4].map((i) =>
-    [letters.M[i], letters.e[i], letters.m[i], letters.o[i], letters.r[i], letters.a[i]].join(" ")
-  );
-
-  const gradientHex = ["#9C27B0", "#AB47BC", "#BA68C8", "#CE93D8", "#E1BEE7"];
+  const gradientHex = ["#9C27B0", "#BA68C8", "#E1BEE7"];
 
   console.log();
   logo.forEach((line, index) => {
@@ -68,14 +25,12 @@ export function printBanner() {
   const divider = theme.dim("·".repeat(72));
 
   const usage =
-    `${theme.primary("memora save")} ${theme.dim('"what it does"')}\n` +
-    `${theme.muted("  saves the last command you typed")}\n\n` +
-    `${theme.primary("memora run ")} ${theme.dim('"what it does"')}\n` +
-    `${theme.muted("  finds it and asks if you want to run it")}`;
+    `${theme.primary("memora save")} ${theme.dim('"what it does"')} ${theme.muted("— saves the last command")}\n` +
+    `${theme.primary("memora run ")} ${theme.dim('"what it does"')} ${theme.muted("— finds & asks to run it")}`;
 
   console.log(
-    boxen(`${title}\n${tagline}\n${divider}\n\n${usage}`, {
-      padding: { top: 1, bottom: 1, left: 2, right: 2 },
+    boxen(`${title}\n${tagline}\n${divider}\n${usage}`, {
+      padding: { top: 0, bottom: 0, left: 2, right: 2 },
       margin: { top: 0, bottom: 0, left: 1, right: 0 },
       borderStyle: "round",
       borderColor: "#D9B24C",
