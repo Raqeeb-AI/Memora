@@ -19,13 +19,12 @@ Instead of remembering commands, you remember what they do. Save one with a plai
 ## See the full workflow 🎬
 
 ```bash
+$ for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+
 $ memora save "kill process on port"
-
-Last command in this terminal:
-  for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
-
-Save this one? (Y/n)
-✓ Saved
+╭────────────────────────────────╮
+│ ✓ Saved: kill process on port  │
+╰────────────────────────────────╯
 ```
 
 ```bash
