@@ -21,6 +21,7 @@ export async function runInteractive() {
         name: "choice",
         message: "What do you want to do?\n",
         loop: false,
+        pageSize: 15,
         choices: [
           { name: "Save a command", value: "save" },
           { name: "Find & run a command", value: "run" },
@@ -38,7 +39,7 @@ export async function runInteractive() {
     console.log();
     switch (choice) {
       case "save":
-        await saveCommand();
+        await addCommand();
         break;
       case "run":
         await runCommand();
