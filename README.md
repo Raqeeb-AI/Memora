@@ -1,229 +1,115 @@
-# memora
+# memora 🧠
 
-**Remember terminal commands by what they do—not by how they're written.**
+A CLI that remembers your terminal commands by what they do, not how you typed them. 🚀
 
-Ever spent 15 minutes finding a command... only to forget it a week later?
+## The problem 😫
 
-You finally solve a problem after searching through Stack Overflow, GitHub issues, blogs, and random forums.
-
-Maybe it's a command like this:
+You spend 15 minutes solving a problem and land on a command like this:
 
 ```cmd
 for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
 ```
 
-It works.
+It works. You move on. Three weeks later the same problem comes back, and you've completely forgotten this command exists. So you Google it again, or ask ChatGPT again, and rebuild something you already solved once. 🤦‍♂️
 
-You move on.
+## Meet memora 👋
 
-A few weeks later, the exact same problem comes back.
+Instead of remembering commands, you remember what they do. Save one with a plain-English description. Later, describe what you're trying to do, and memora finds it, even if you don't remember your exact wording. ✨
 
-Now you're searching Google again...
+## See the full workflow 🎬
 
-not because the solution is hard—
+```bash
+$ memora save "kill process on port"
 
-but because you can't remember the command.
+Last command in this terminal:
+  for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
 
-Sound familiar?
+Save this one? (Y/n)
+✓ Saved
+```
 
-That's exactly why Memora exists.
+```bash
+$ memora run "free up a port"
 
-## Meet Memora 👋
-
-Instead of remembering how to write commands,
-
-just remember what they do.
-
-Save commands in plain English.
-
-Later, search using plain English.
-
-Memora finds the right command for you—even if you don't remember the exact words you originally used.
-
-### A complete example
-
-Imagine you finally found the command to kill whatever is using port 3000.
-
-Run it as usual:
-```cmd
+Found
+kill process on port
 for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+
+Run this now? (y/N)
 ```
 
-Now tell Memora what it does:
-```bash
-memora save "kill process on port"
-```
+"Kill process on port" and "free up a port" mean the same thing to you. They mean the same thing to memora too. 🤝
 
-That's it.
-
-Weeks later...
-
-Instead of Googling again...
-
-just describe what you're trying to do.
-
-```bash
-memora run "free port 3000"
-```
-or
-```bash
-memora run "stop process using a port"
-```
-or
-```bash
-memora run "kill application on port"
-```
-
-Memora understands they all mean the same thing.
-
-It finds your command and asks before running it.
-
-## Why it's different
-
-You don't remember commands. You remember what they do.
-
-Nobody remembers:
-```bash
-docker system prune -af
-```
-They remember:
-**"clean Docker."**
-
-Nobody remembers:
-```cmd
-ipconfig /all
-```
-They remember:
-**"show my network information."**
-
-Nobody remembers:
-```bash
-git reset --soft HEAD~1
-```
-They remember:
-**"undo my last commit."**
-
-That's exactly how Memora searches.
-
-## Install
+## Install 💻
 
 ```bash
 npm install -g memora-cmd
 ```
 
-## Commands
+## Quick start ⚡
 
-### Save a command
-You just ran something useful?
-
-Save it immediately.
 ```bash
 memora save "restart docker"
-```
-Memora automatically grabs the last command you executed.
-
-No copy. No paste. No retyping.
-
-### Run a command
-Forgot the syntax?
-
-Describe what you want.
-```bash
 memora run "restart docker"
-```
-Memora finds the closest match, shows you the command, and asks before executing it.
-
-### Find without running
-Want to see the command first?
-```bash
-memora find "restart docker"
-```
-Perfect when you just want to copy it.
-
-### Add manually
-Already know the command?
-
-Add it yourself.
-```bash
-memora add "restart docker" -- docker compose restart
-```
-Useful in scripts or when command history isn't available.
-
-### View everything
-```bash
 memora list
 ```
-Displays every saved command.
 
-### Delete
-```bash
-memora delete
-```
-Choose one interactively.
+## Command reference 📖
 
-or
-```bash
-memora delete H8Q7xxe3
-```
-Delete directly using its ID.
+| Command | Purpose | Example |
+|---|---|---|
+| `memora save "desc"` | Save the command you just ran 💾 | `memora save "restart docker"` |
+| `memora run "desc"` | Find a command and run it 🏃 | `memora run "restart docker"` |
+| `memora find "desc"` | Find a command without running it 🔍 | `memora find "restart docker"` |
+| `memora add "desc" -- cmd` | Add a command manually ✍️ | `memora add "restart docker" -- docker compose restart` |
+| `memora list` | Show everything you've saved 📋 | `memora list` |
+| `memora delete [id]` | Delete a saved command 🗑️ | `memora delete H8Q7xxe3` |
+| `memora` | Open an interactive arrow-key menu 🎮 | `memora` |
 
-### Interactive mode
-Don't remember the Memora commands either?
+## Why not just Ctrl+R? 🤔
 
-Just run:
-```bash
-memora
-```
-Navigate everything using arrow keys.
+Shell history only works if you remember a fragment of what you typed. memora works from what the command *does*, which is what you actually remember weeks later.
 
-## How it works
+| | Ctrl+R 🕒 | memora 🧠 |
+|---|---|---|
+| Search by | exact text typed | what the command does |
+| Works across machines | No ❌ | Yes ✅ |
+| Works on Windows CMD | No ❌ | Yes ✅ |
+| Add notes | No ❌ | Yes ✅ |
 
-How does Memora find similar commands?
+## Key features ⭐
 
-Memora doesn't search for exact words. It searches for meaning.
+- 🎯 Search by meaning, not exact syntax
+- 🔌 Works fully offline after install
+- 🖥️ Windows, macOS, and Linux
+- 🔒 Nothing ever uploaded anywhere
+- 🕹️ Interactive menu if you forget the commands
+- ☁️ No account, no cloud, no subscription
 
-For example, these searches all find the same saved command:
-- network info
-- network configuration
-- show my IP
-- internet details
+## How it works ⚙️
 
-Even though the wording is different, the intent is the same.
+memora saves each command next to your plain-English description. When you search, it compares meaning, not just spelling, so different phrasings of the same intent still find the right command. 🧩
 
-Memora uses a small language model running entirely on your own computer to understand those similarities.
+## Privacy and offline support 🛡️
 
-No cloud.
-No API keys.
-No subscriptions.
+Everything runs on your machine. No API keys, no network calls once installed, no data collection. It stays that way whether you save 5 commands or 5,000. 🔒
 
-After the first download, everything works completely offline.
+## Where your data lives 📁
 
-## Why Memora?
-
-✅ Search by meaning instead of exact syntax
-✅ Works completely offline
-✅ Runs on Windows, macOS and Linux
-✅ Never uploads your commands
-✅ Interactive terminal UI
-✅ No cloud account required
-✅ Stores everything locally
-
-## Where's my data stored?
-
-Locally, in a JSON file in your OS's standard config directory — nothing leaves your machine:
+A single JSON file in your OS's standard config folder:
 
 - **Windows:** `%APPDATA%\memora-cli-nodejs\config.json`
 - **macOS:** `~/Library/Preferences/memora-cli-nodejs`
 - **Linux:** `~/.config/memora-cli-nodejs`
 
-## Built with
+## Built with 🛠️
 
-Node.js · [Commander](https://github.com/tj/commander.js) · [Inquirer](https://github.com/SBoudrias/Inquirer.js) · [Transformers.js](https://github.com/xenova/transformers.js) (semantic search) · [Chalk](https://github.com/chalk/chalk) & [Boxen](https://github.com/sindresorhus/boxen) (terminal styling) · [Conf](https://github.com/sindresorhus/conf) (cross-platform storage)
+Node.js · Commander · Inquirer · Transformers.js · Chalk & Boxen · Conf
 
-## Contributing
+## Contributing 🤝
 
-Issues and PRs welcome. This is a small, focused tool — keep additions simple and in line with "save it, find it, done."
+Issues and PRs welcome. Keep additions simple and in line with "save it, find it, done."
 
-## License
+## License 📜
 
 MIT
