@@ -1,6 +1,6 @@
 {
   "name": "memora-cmd",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Never forget a command again. Save the terminal commands you always forget, find them instantly by describing what they do.",
   "main": "src/index.js",
   "type": "module",
