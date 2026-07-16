@@ -1,7 +1,7 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.9";
+export const VERSION = "1.0.10";
 
 import chalk from "chalk";
 
@@ -26,8 +26,8 @@ export function printBanner() {
   const divider = theme.dim("·".repeat(72));
 
   const usage =
-    `${theme.primary("memora save")} ${theme.dim('"what it does"')} ${theme.muted("— saves the last command")}\n` +
-    `${theme.primary("memora run ")} ${theme.dim('"what it does"')} ${theme.muted("— finds & asks to run it")}`;
+    `${theme.primary("memora save")} ${theme.dim('"description"')} ${theme.muted("— saves the last command")}\n` +
+    `${theme.primary("memora run ")} ${theme.dim('"description"')} ${theme.muted("— finds & asks to run it")}`;
 
   console.log(
     boxen(`${title}\n${tagline}\n${divider}\n${usage}`, {
