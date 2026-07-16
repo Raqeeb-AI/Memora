@@ -1,48 +1,109 @@
 # memora
 
-**Never forget a command again.**
+**Remember terminal commands by what they do—not by how they're written.**
 
-You've solved this exact problem before. Somewhere in your shell history is the `ffmpeg` flag combo, the `docker` one-liner, the `netstat` incantation that took you 15 minutes to get right the first time — and you're about to spend another 15 minutes finding it again.
+Ever spent 15 minutes finding a command... only to forget it a week later?
 
-### The Problem
-Developers frequently type long, complicated terminal commands that they might not use every day, but don't want to re-learn or search Google for next time. Standard shell history tools (like hitting `Ctrl+R`) require you to remember the exact syntax or text you typed, they are tied to a single machine, they randomly forget older commands, and they don't work smoothly natively on Windows CMD. You need a system that retrieves commands based on their *intent* and meaning, not just exact text matches.
+You finally solve a problem after searching through Stack Overflow, GitHub issues, blogs, and random forums.
 
-### The Solution: Memora
-Memora fixes this constraint: Save a command right after you run it with a plain-English description, then find and run it later just by describing what it does. Instead of trying to memorize flags, Memora remembers contexts.
+Maybe it's a command like this:
 
+```cmd
+for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
 ```
-# just ran a gnarly command:
-$ memora save "kill process on a port"
 
-Last command in this terminal:
-  for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+It works.
 
-Save this one? (Y/n)
-✓ Saved
+You move on.
 
-# weeks later...
-$ memora run "network info"
-Found
-network configuration
+A few weeks later, the exact same problem comes back.
+
+Now you're searching Google again...
+
+not because the solution is hard—
+
+but because you can't remember the command.
+
+Sound familiar?
+
+That's exactly why Memora exists.
+
+## Meet Memora 👋
+
+Instead of remembering how to write commands,
+
+just remember what they do.
+
+Save commands in plain English.
+
+Later, search using plain English.
+
+Memora finds the right command for you—even if you don't remember the exact words you originally used.
+
+### A complete example
+
+Imagine you finally found the command to kill whatever is using port 3000.
+
+Run it as usual:
+```cmd
+for /f "tokens=5" %a in ('netstat -ano ^| findstr :3000') do taskkill /PID %a /F
+```
+
+Now tell Memora what it does:
+```bash
+memora save "kill process on port"
+```
+
+That's it.
+
+Weeks later...
+
+Instead of Googling again...
+
+just describe what you're trying to do.
+
+```bash
+memora run "free port 3000"
+```
+or
+```bash
+memora run "stop process using a port"
+```
+or
+```bash
+memora run "kill application on port"
+```
+
+Memora understands they all mean the same thing.
+
+It finds your command and asks before running it.
+
+## Why it's different
+
+You don't remember commands. You remember what they do.
+
+Nobody remembers:
+```bash
+docker system prune -af
+```
+They remember:
+**"clean Docker."**
+
+Nobody remembers:
+```cmd
 ipconfig /all
-
-Run this now? (y/N)
 ```
+They remember:
+**"show my network information."**
 
-No account. No cloud. No AI guessing. Just your own commands, searchable by intent — and no retyping commands with pipes or special characters through your terminal's argument parser.
+Nobody remembers:
+```bash
+git reset --soft HEAD~1
+```
+They remember:
+**"undo my last commit."**
 
----
-
-## Why not just use shell history (Ctrl+R)?
-
-Shell history search only works if you remember a fragment of what you *typed*. Memora searches by what the command *did* — which is what you actually remember six weeks later.
-
-| | Ctrl+R history search | Memora |
-|---|---|---|
-| Search by | exact text you typed | what the command does |
-| Survives across machines | No | Yes (portable JSON store) |
-| Works on Windows CMD | No (no history file) | Yes |
-| Add notes/tags | No | Yes |
+That's exactly how Memora searches.
 
 ## Install
 
@@ -50,68 +111,102 @@ Shell history search only works if you remember a fragment of what you *typed*. 
 npm install -g memora-cmd
 ```
 
-## Usage
+## Commands
 
 ### Save a command
+You just ran something useful?
 
-Right after you run something you'll want again:
-
+Save it immediately.
 ```bash
-memora save "convert mp4 to gif"
+memora save "restart docker"
 ```
+Memora automatically grabs the last command you executed.
 
-Memora shows you the last command it detected in your terminal and asks you to confirm before saving anything — so it never silently saves the wrong thing. If detection doesn't work on your setup, it falls back to manual entry, always with the same confirmation step.
+No copy. No paste. No retyping.
 
-If you save something worded like an existing entry, Memora will also ask whether you meant to update it or save a separate one — so your list doesn't fill up with near-duplicates.
+### Run a command
+Forgot the syntax?
 
-### Find & run a command
-
+Describe what you want.
 ```bash
-memora run "gif"
+memora run "restart docker"
 ```
+Memora finds the closest match, shows you the command, and asks before executing it.
 
-- Shows you the full matching command
-- Asks **"Run this now?"** before doing anything
+### Find without running
+Want to see the command first?
+```bash
+memora find "restart docker"
+```
+Perfect when you just want to copy it.
 
-If more than one saved command could match, you'll get a short list to pick from instead of Memora silently guessing — so a command you use constantly never accidentally shadows one you rarely need.
+### Add manually
+Already know the command?
 
-Memora is truly intelligent: it uses a lightweight local AI model to perform **semantic matching** instead of simple fuzzy text. This means genuinely different wording with zero shared vocabulary (e.g. "network info" vs "check my ip") will still match perfectly. Since the model is bundled and runs on your machine, it retains the fully offline, private-by-default design this tool is built around.
+Add it yourself.
+```bash
+memora add "restart docker" -- docker compose restart
+```
+Useful in scripts or when command history isn't available.
 
-Ranking is relevance-first regardless: text match quality always wins. Usage frequency only breaks ties between two matches that are already equally relevant — it never overrides a clearly better match.
-
-### List everything you've saved
-
+### View everything
 ```bash
 memora list
 ```
+Displays every saved command.
 
-### Delete a command
-
+### Delete
 ```bash
 memora delete
-# or, if you know the id:
+```
+Choose one interactively.
+
+or
+```bash
 memora delete H8Q7xxe3
 ```
+Delete directly using its ID.
 
-### Just run `memora`
+### Interactive mode
+Don't remember the Memora commands either?
 
-No arguments launches a friendly interactive menu — pick what you want to do with arrow keys:
-
+Just run:
 ```bash
 memora
 ```
+Navigate everything using arrow keys.
 
-### Advanced: type a command directly
+## How it works
 
-If you can't use terminal detection (e.g. scripting/CI), typed-save is still available:
+How does Memora find similar commands?
 
-```bash
-memora add "convert mp4 to gif" -- ffmpeg -i input.mp4 -vf "fps=10,scale=320:-1" output.gif
-```
+Memora doesn't search for exact words. It searches for meaning.
 
-Everything after `--` is stored exactly as-is. Symbols like `|` and `^` may need escaping depending on your shell — `memora save` avoids this entirely and is the recommended default.
+For example, these searches all find the same saved command:
+- network info
+- network configuration
+- show my IP
+- internet details
 
-There's also a plain search without the run-prompt: `memora find "gif"`.
+Even though the wording is different, the intent is the same.
+
+Memora uses a small language model running entirely on your own computer to understand those similarities.
+
+No cloud.
+No API keys.
+No subscriptions.
+
+After the first download, everything works completely offline.
+
+## Why Memora?
+
+✅ Search by meaning instead of exact syntax
+✅ Works completely offline
+✅ Runs on Windows, macOS and Linux
+✅ Never uploads your commands
+✅ Interactive terminal UI
+✅ No cloud account required
+✅ Stores everything locally
 
 ## Where's my data stored?
 

@@ -62,6 +62,10 @@ export function clearAll() {
   store.set("entries", []);
 }
 
+export function saveAll(entries) {
+  store.set("entries", entries);
+}
+
 export function getStorePath() {
   return store.path;
 }
