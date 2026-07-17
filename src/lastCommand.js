@@ -30,11 +30,32 @@ if (process.platform === "win32") {
  * per platform and fail silently (returning null) if it doesn't work,
  * so the caller can fall back to clipboard or manual entry.
  */
+function isIgnoredMemoraCommand(cmd) {
+  if (!cmd) return false;
+  const lower = cmd.trim().toLowerCase();
+  return (
+    lower === "memora" ||
+    lower.startsWith("memora ") ||
+    lower.startsWith("memora.js ") ||
+    lower.includes("memora save") ||
+    lower.startsWith("npx memora") ||
+    (lower.startsWith("node ") && lower.includes("memora"))
+  );
+}
+
 export function getLastTypedCommand() {
+  let cmd = null;
   if (process.platform === "win32") {
-    return getLastWindowsCommand();
+    cmd = getLastWindowsCommand();
+  } else {
+    cmd = getLastUnixCommand();
   }
-  return getLastUnixCommand();
+
+  if (isIgnoredMemoraCommand(cmd)) {
+    return null;
+  }
+
+  return cmd;
 }
 
 function getConsoleHistory(exeName = "cmd.exe") {
@@ -60,7 +81,7 @@ function getLastWindowsCommand() {
     const lines = getConsoleHistory("cmd.exe");
     if (lines.length > 0) {
       const lastLine = lines[lines.length - 1].trim();
-      if (lastLine.startsWith("memora ") || lastLine.includes("memora save")) {
+      if (isIgnoredMemoraCommand(lastLine)) {
         if (lines.length >= 2) return lines[lines.length - 2].trim();
       } else {
         return lastLine;
