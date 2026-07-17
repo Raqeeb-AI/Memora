@@ -1,6 +1,6 @@
-# memora
+# memora 🧠
 
-Memora is an intelligent command-line tool that acts as your personal terminal memory. When you find a complex command that works, you simply save it with a plain-English description. Later, you just describe what you want to achieve, and Memora recalls the exact command using semantic search—even if you use totally different words.
+Memora is an intelligent command-line tool that acts as your personal terminal memory. When you find a complex command that works, you simply save it with a plain-English description. Later, you just describe what you want to achieve, and Memora recalls the exact command using semantic search—even if you use totally different words. 🚀
 
 ## The problem
 
@@ -39,13 +39,13 @@ Run this now? (y/N)
 
 "Kill process on port" and "free up a port" mean the same thing to you. They mean the same thing to memora too.
 
-## Install
+## Install 💻
 
 ```bash
 npm install -g memora-cmd
 ```
 
-## Quick start
+## Quick start ⚡
 
 ```bash
 # 1. Run a complex command that you might forget later
@@ -58,7 +58,7 @@ memora save "start local postgres database"
 memora run "run postgres locally"
 ```
 
-## Command reference
+## Command reference 📖
 
 | Command | Purpose | Example |
 |---|---|---|
@@ -90,11 +90,11 @@ Shell history only works if you remember a fragment of what you typed. memora wo
 - Interactive menu if you forget the commands
 - No account, no cloud, no subscription
 
-## How it works
+## How it works ⚙️
 
 memora saves each command next to your plain-English description. When you search, it compares meaning, not just spelling, so different phrasings of the same intent still find the right command.
 
-## Privacy and offline support
+## Privacy and offline support 🛡️
 
 Everything runs on your machine. No API keys, no network calls once installed, no data collection. It stays that way whether you save 5 commands or 5,000.
 
