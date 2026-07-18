@@ -104,20 +104,13 @@ function getLastWindowsCommand() {
 }
 
 function getLastUnixCommand() {
-  const histFile =
-    process.env.HISTFILE ||
-    path.join(homedir(), process.env.SHELL?.includes("zsh") ? ".zsh_history" : ".bash_history");
-
+  const memoraFile = path.join(homedir(), ".memora", "recent-commands");
   try {
-    const content = readFileSync(histFile, "utf8");
+    const content = readFileSync(memoraFile, "utf8");
     const lines = content.split("\n").map((l) => l.trim()).filter(Boolean);
-    if (lines.length === 0) return null;
-    let last = lines[lines.length - 1];
-    // zsh extended history format: ": 1699999999:0;actual command"
-    const zshMatch = last.match(/^:\s*\d+:\d+;(.*)$/);
-    if (zshMatch) last = zshMatch[1];
-    return last;
+    if (lines.length > 0) return lines[lines.length - 1];
   } catch {
     return null;
   }
+  return null;
 }

@@ -11,8 +11,9 @@ import { updateCommand } from "../src/commands/update.js";
 import { guideCommand } from "../src/commands/guide.js";
 import { printBanner, VERSION } from "../src/banner.js";
 import { theme } from "../src/theme.js";
+import { installShellHook } from "../src/shellIntegration.js";
 
-const program = new Command();
+const program = new Command(); //boots up the engine , works accordingly to what user has typed.
 
 program
   .name("memora")
@@ -91,9 +92,16 @@ program
     printBanner();
   });
 
+program
+  .command("setup-shell")
+  .description("Install shell integration for live command capture (Mac/Linux)")
+  .action(() => {
+    installShellHook();
+  });
+
 // No subcommand at all -> friendly interactive menu
 if (process.argv.length <= 2) {
   runInteractive();
 } else {
-  program.parseAsync(process.argv);
+  program.parseAsync(process.argv);//parses the arguments and executes the command -- like it has array of every word typed in terminal.
 }

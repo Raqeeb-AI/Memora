@@ -5,6 +5,9 @@ import { findSimilar } from "../search.js";
 import { getLastTypedCommand } from "../lastCommand.js";
 import { theme, symbols } from "../theme.js";
 import { printSuccessBox } from "../banner.js";
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
 
 // Figures out which command to save, in order of trust:
 // 1. The command you actually just typed in this terminal
@@ -17,6 +20,13 @@ async function resolveCommandToSave() {
   const typed = getLastTypedCommand();
   if (typed) {
     return typed;
+  }
+
+  if (process.platform !== "win32") {
+    const memoraFile = path.join(os.homedir(), ".memora", "recent-commands");
+    if (!fs.existsSync(memoraFile)) {
+      console.log(theme.muted(`Tip: run \`memora setup-shell\` once to enable automatic detection on this machine.`));
+    }
   }
 
   let clip = null;

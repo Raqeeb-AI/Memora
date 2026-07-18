@@ -1,4 +1,4 @@
-import inquirer from "inquirer";
+import inquirer from "inquirer"; //takes control from user terminal window -- lists visual screen and captures the input.
 import { printBanner } from "./banner.js";
 import { theme } from "./theme.js";
 import { saveCommand } from "./commands/save.js";
@@ -9,6 +9,7 @@ import { addCommand } from "./commands/add.js";
 import { findCommand } from "./commands/find.js";
 import { updateCommand } from "./commands/update.js";
 import { guideCommand } from "./commands/guide.js";
+import { installShellHook } from "./shellIntegration.js";
 
 export async function runInteractive() {
   printBanner();
@@ -30,6 +31,7 @@ export async function runInteractive() {
           new inquirer.Separator(),
           { name: theme.muted("Check for updates"), value: "update" },
           { name: theme.muted("How to use"), value: "guide" },
+          { name: theme.muted("Setup shell integration"), value: "setup-shell" },
           new inquirer.Separator(),
           { name: theme.muted("Exit"), value: "exit" },
         ],
@@ -61,6 +63,9 @@ export async function runInteractive() {
         break;
       case "guide":
         guideCommand();
+        break;
+      case "setup-shell":
+        installShellHook();
         break;
       case "exit":
         console.log(theme.muted("\nSee you next time.\n"));
