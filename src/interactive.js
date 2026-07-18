@@ -31,7 +31,7 @@ export async function runInteractive() {
           new inquirer.Separator(),
           { name: theme.muted("Check for updates"), value: "update" },
           { name: theme.muted("How to use"), value: "guide" },
-          { name: theme.muted("Setup shell integration"), value: "setup-shell" },
+          { name: theme.muted("Setup shell integration (Mac/Linux)"), value: "setup-shell" },
           new inquirer.Separator(),
           { name: theme.muted("Exit"), value: "exit" },
         ],

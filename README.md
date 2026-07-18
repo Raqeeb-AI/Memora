@@ -45,6 +45,8 @@ Run this now? (y/N)
 npm install -g memora-cmd
 ```
 
+> **🍏 Mac / 🐧 Linux Users:** You need to run one quick command to allow Memora to securely listen to your terminal history. After installing, run `memora setup-shell` and then restart your terminal!
+
 ## Quick start ⚡
 
 ```bash

@@ -14,6 +14,7 @@ export function guideCommand() {
         { c: 'memora list', d: "Show everything you've saved" },
         { c: 'memora delete [id]', d: "Delete a saved command" },
         { c: 'memora update', d: "Check for and install the latest version" },
+        { c: 'memora setup-shell', d: "Setup live command tracking (Mac/Linux)" },
         { c: 'memora', d: "Open the interactive menu" },
     ];
 
