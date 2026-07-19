@@ -1,4 +1,9 @@
 import { pipeline, env } from "@xenova/transformers";
+import path from "node:path";
+import { homedir } from "node:os";
+
+// Store models in the user's home directory to avoid permission issues when installed globally
+env.cacheDir = path.join(homedir(), ".memora", "models");
 
 // Disable local models loading strictly from cache to avoid issues sometimes, 
 // wait, by default Xenova downloads to a local cache. That's good for offline use.

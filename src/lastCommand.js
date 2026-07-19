@@ -108,7 +108,13 @@ function getLastUnixCommand() {
   try {
     const content = readFileSync(memoraFile, "utf8");
     const lines = content.split("\n").map((l) => l.trim()).filter(Boolean);
-    if (lines.length > 0) return lines[lines.length - 1];
+
+    // Look backwards to find the last command that wasn't a memora command itself
+    for (let i = lines.length - 1; i >= 0; i--) {
+      if (!isIgnoredMemoraCommand(lines[i])) {
+        return lines[i];
+      }
+    }
   } catch {
     return null;
   }
