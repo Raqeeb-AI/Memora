@@ -22,8 +22,8 @@ export function printBanner() {
   console.log();
 
   const title = `${theme.primary("Memora")} ${theme.muted(`v${VERSION}`)}`;
-  const line2 = theme.text("— Save terminal commands with plain-English descriptions.");
-  const line3 = theme.text("— Search by meaning and run them instantly.");
+  const line2 = `${theme.primary("memora save")} ${theme.dim('"description"')} — Save terminal commands with plain-English.`;
+  const line3 = `${theme.primary("memora run ")} ${theme.dim('"description"')} — Search by meaning and run them instantly.`;
   const features = theme.primaryDim("Offline • Private • Cross-platform");
 
   console.log(
