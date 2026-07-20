@@ -1,7 +1,7 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.17";
+export const VERSION = "1.0.18";
 
 import chalk from "chalk";
 
@@ -21,10 +21,19 @@ export function printBanner() {
   });
   console.log();
 
-  const title = `${theme.primary("Memora")} ${theme.muted(`v${VERSION}`)}`;
-  const line2 = `${theme.primary("memora save")} ${theme.dim('"description"')} — Save terminal commands with plain-English.`;
-  const line3 = `${theme.primary("memora run ")} ${theme.dim('"description"')} — Search by meaning and run them instantly.`;
-  const features = theme.primaryDim("Offline • Private • Cross-platform");
+  const titleVisibleLen = 6 + 1 + 1 + VERSION.length;
+  const titlePadding = " ".repeat(Math.floor((70 - titleVisibleLen) / 2));
+  const title = titlePadding + `${theme.secondary("Memora")} ${theme.muted(`v${VERSION}`)}`;
+  const saveCmd = theme.primary("memora save ");
+  const runCmd = theme.primary("memora run  ");
+  const argDesc = theme.dim('"description"');
+  const dash = theme.muted("—");
+
+  const line2 = `${saveCmd}${argDesc} ${dash} ${theme.text("Save terminal commands with plain-English.")}`;
+  const line3 = `${runCmd}${argDesc} ${dash} ${theme.text("Search by meaning and run them instantly.")}`;
+  const featuresText = "Offline • Private • Cross-platform";
+  const padding = " ".repeat(18);
+  const features = theme.secondary(padding + featuresText);
 
   console.log(
     boxen(`${title}\n${line2}\n${line3}\n${features}`, {
