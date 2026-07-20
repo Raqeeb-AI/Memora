@@ -16,23 +16,27 @@ export async function runInteractive() {
 
   let exit = false;
   while (!exit) {
+    const header = theme.dim("────────────────────────────────────────\n") +
+      theme.text("↑↓ Select an option • Enter to select\n") +
+      theme.dim("────────────────────────────────────────\n");
+
     const { choice } = await inquirer.prompt([
       {
         type: "list",
         name: "choice",
-        message: "What do you want to do?\n",
+        prefix: "",
+        message: header,
         loop: false,
         pageSize: 15,
         choices: [
-          { name: "Save a command", value: "save" },
-          { name: "Find & run a command", value: "run" },
-          { name: "List everything saved", value: "list" },
-          { name: "Delete a command", value: "delete" },
-          new inquirer.Separator(),
-          { name: theme.muted("Check for updates"), value: "update" },
-          { name: theme.muted("How to use"), value: "guide" },
-          { name: theme.muted("Setup shell integration (Mac/Linux)"), value: "setup-shell" },
-          new inquirer.Separator(),
+          { name: "Save command", value: "save" },
+          { name: "Find command", value: "run" },
+          { name: "List commands", value: "list" },
+          { name: "Delete command", value: "delete" },
+          new inquirer.Separator(theme.dim("\n────────────────────────────────────────")),
+          { name: theme.muted("Shell integration (Mac/Linux)"), value: "setup-shell" },
+          { name: theme.muted("Check updates"), value: "update" },
+          { name: theme.muted("Help"), value: "guide" },
           { name: theme.muted("Exit"), value: "exit" },
         ],
       },

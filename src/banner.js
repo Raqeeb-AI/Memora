@@ -1,7 +1,7 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.16";
+export const VERSION = "1.0.17";
 
 import chalk from "chalk";
 
@@ -21,24 +21,21 @@ export function printBanner() {
   });
   console.log();
 
-  const title = `${theme.primaryDim("CLI")}  ${theme.muted(`v${VERSION}`)}`;
-  const tagline = theme.text("Save a command. Find it later by what it does, not what you typed.");
-  const divider = theme.dim("·".repeat(72));
-
-  const usage =
-    `${theme.primary("memora save")} ${theme.dim('"description"')} ${theme.muted("— saves the last command")}\n` +
-    `${theme.primary("memora run ")} ${theme.dim('"description"')} ${theme.muted("— finds & asks to run it")}`;
+  const title = `${theme.primary("Memora")} ${theme.muted(`v${VERSION}`)}`;
+  const line2 = theme.text("— Save terminal commands with plain-English descriptions.");
+  const line3 = theme.text("— Search by meaning and run them instantly.");
+  const features = theme.primaryDim("Offline • Private • Cross-platform");
 
   console.log(
-    boxen(`${title}\n${tagline}\n${divider}\n${usage}`, {
+    boxen(`${title}\n${line2}\n${line3}\n${features}`, {
       padding: { top: 0, bottom: 0, left: 2, right: 2 },
-      margin: { top: 0, bottom: 0, left: 1, right: 0 },
+      margin: { top: 0, bottom: 1, left: 1, right: 0 },
       borderStyle: "round",
       borderColor: "#D9B24C",
       dimBorder: true,
     })
   );
-  console.log(theme.dim("   Built by Mohammed Abdul Raqeeb · linkedin.com/in/md-abdul-raqeeb-b85a1922a\n"));
+  console.log(theme.dim("   Developed by Mohammed Abdul Raqeeb\n"));
 }
 
 export function printMiniHeader(text) {
