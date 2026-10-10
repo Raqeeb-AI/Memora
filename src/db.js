@@ -14,13 +14,14 @@ export function getAll() {
   return store.get("entries");
 }
 
-export function addEntry({ description, command, tags = [] }) {
+export function addEntry({ description, command, tags = [], embedding = null }) {
   const entries = getAll();
   const entry = {
     id: nanoid(8),
     description,
     command,
     tags,
+    embedding,
     createdAt: new Date().toISOString(),
     lastUsed: null,
     useCount: 0,

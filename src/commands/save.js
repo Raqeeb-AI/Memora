@@ -1,7 +1,7 @@
 import inquirer from "inquirer";
 import clipboardy from "clipboardy";
 import { addEntry, getAll, updateEntry } from "../db.js";
-import { findSimilar } from "../search.js";
+import { findSimilar, getEmbedding } from "../search.js";
 import { getLastTypedCommand } from "../lastCommand.js";
 import { theme, symbols } from "../theme.js";
 import { printSuccessBox } from "../banner.js";
@@ -114,7 +114,8 @@ export async function saveCommand(description) {
     }
   }
 
-  const entry = addEntry({ description: desc, command: cmd, tags: [] });
+  const embeddingArray = Array.from(await getEmbedding(desc));
+  const entry = addEntry({ description: desc, command: cmd, tags: [], embedding: embeddingArray });
 
   printSuccessBox([
     `${symbols.check} ${theme.bold("Saved")}`,

@@ -31,7 +31,7 @@ function cosineSimilarity(a, b) {
 }
 
 // Calculate the embedding vector for a string
-async function getEmbedding(text) {
+export async function getEmbedding(text) {
   const model = await getExtractor();
   const output = await model(text, { pooling: 'mean', normalize: true });
   return output.data;
@@ -53,12 +53,25 @@ export async function rankMatches(entries, query) {
 
   const queryEmbedding = await getEmbedding(query);
 
+  let migrationHappened = false;
   const results = [];
+
   for (const item of entries) {
-    const textToMatch = [item.description, (item.tags || []).join(" ")].filter(Boolean).join(" ");
-    const embedding = await getEmbedding(textToMatch);
-    const score = cosineSimilarity(queryEmbedding, embedding);
+    if (!item.embedding) {
+      // Backfill missing embeddings for old commands
+      const textToMatch = [item.description, (item.tags || []).join(" ")].filter(Boolean).join(" ");
+      const embeddingArray = Array.from(await getEmbedding(textToMatch));
+      item.embedding = embeddingArray;
+      migrationHappened = true;
+    }
+
+    const score = cosineSimilarity(queryEmbedding, item.embedding);
     results.push({ item, score });
+  }
+
+  if (migrationHappened) {
+    const { saveAll } = await import("./db.js");
+    saveAll(entries);
   }
 
   results.sort((a, b) => b.score - a.score);

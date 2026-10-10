@@ -41,7 +41,11 @@ export async function addCommand(description, commandParts) {
     ? tagsInput.split(",").map((t) => t.trim()).filter(Boolean)
     : [];
 
-  const entry = addEntry({ description: desc, command: cmd, tags });
+  const { getEmbedding } = await import("../search.js");
+  const textToMatch = [desc, tags.join(" ")].filter(Boolean).join(" ");
+  const embeddingArray = Array.from(await getEmbedding(textToMatch));
+
+  const entry = addEntry({ description: desc, command: cmd, tags, embedding: embeddingArray });
 
   printSuccessBox([
     `${symbols.check} ${theme.bold("Saved")}`,

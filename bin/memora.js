@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+//shebang line - tells os to execute this file using node.js interpreter
 import { Command } from "commander";
 import { runInteractive } from "../src/interactive.js";
 import { saveCommand } from "../src/commands/save.js";

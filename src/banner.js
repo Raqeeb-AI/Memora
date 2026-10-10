@@ -1,7 +1,7 @@
 import boxen from "boxen";
 import { theme } from "./theme.js";
 
-export const VERSION = "1.0.18";
+export const VERSION = "1.0.19";
 
 import chalk from "chalk";
 
